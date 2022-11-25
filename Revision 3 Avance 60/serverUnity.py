@@ -45,7 +45,7 @@ def getCarro():
         pocisionesCarro = [{"id": str(c.unique_id),
                            "x": x, "y": 0, "z": z}
                            for (c, x, z) in trafficModel.grid.coord_iter()
-                           for a in c if isinstance(c, Carro)]
+                           for a in c if isinstance(a, Carro)]
 
         return jsonify({'positions': pocisionesCarro})
 
@@ -58,7 +58,7 @@ def getSemaforo():
         posicionesSemaforo = [{"id": str(s.unique_id),
                               "x": x, "y": 0, "z": z}
                               for (s, x, z) in trafficModel.grid.coord_iter()
-                              for a in s if isinstance(s, Semaforo)]
+                              for a in s if isinstance(a, Semaforo)]
 
         return jsonify({'positions': posicionesSemaforo})
 
@@ -71,7 +71,7 @@ def getParking():
         posicionesParking = [{"id": str(p.unique_id),
                              "x": x, "y": 0, "z": z}
                              for (p, x, z) in trafficModel.grid.coord_iter()
-                             for a in p if isinstance(p, Parking)]
+                             for a in p if isinstance(a, Parking)]
 
         return jsonify({'positions': posicionesParking})
 
@@ -84,7 +84,7 @@ def GetRoads():
         posicionesRoads = [{"id": str(r.unique_id),
                             "x": x, "y": 0, "z": z}
                            for (r, x, z) in trafficModel.grid.coord_iter()
-                           for a in r if isinstance(r, Roads)]
+                           for a in r if isinstance(a, Roads)]
 
         return jsonify({'positions': posicionesRoads})
 
@@ -97,7 +97,7 @@ def getEdificios():
         posicionesEdificios = [{"id": str(e.unique_id),
                                 "x": x, "y": 0, "z": z}
                                for (e, x, z) in trafficModel.grid.coord_iter()
-                               for a in e if isinstance(e, Edificios)]
+                               for a in e if isinstance(a, Edificios)]
 
         return jsonify({'positions': posicionesEdificios})
 
