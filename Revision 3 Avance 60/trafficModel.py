@@ -1,14 +1,23 @@
 import mesa
-import random
 
 
 class Carro(mesa.Agent):
     def __init__(self, unique_id: str, model: mesa.Model) -> None:
         super().__init__(unique_id, model)
         self.estado = None
+        self.direccion = None
         self.carril = None
+        self.destinos = [(2, 15), (3, 19), (3, 22), (5, 4),
+                        (5, 15), (10, 7), (12, 4), (12, 15),
+                        (12, 20), (18, 14), (18, 20), (19, 2),
+                        (21, 6), (21, 22)]
+        self. destiny = None
+        self.vuelta = False
         # global vuelta = random.randint(1, 101)
         # global cambioCarril = random.randint(1, 101)
+    
+    def setDirection(self):
+        #Descubrir forma de manejar 
 
     def moverBajando(self):
         nuevaPosicion = (self.pos[0], self.pos[1] - 1)
@@ -26,6 +35,9 @@ class Carro(mesa.Agent):
     def moverIzquierda(self):
         nuevaPosicion = (self.pos[0] - 1, self.pos[1])
         self.model.grid.move_agent(self, nuevaPosicion)
+
+    def setDestiny(self):
+        self.destiny = random.choice(self.destinos)
 
     def seleccionRuta(self):
         if(self.pos[0] == 1 and self.pos[1] != 1):
@@ -55,6 +67,7 @@ class Carro(mesa.Agent):
         elif(self.estado == 3):
             self.moverIzquierda()
 
+    
 
 class Semaforo(mesa.Agent):
     def __init__(self, unique_id: str, model: mesa.Model) -> None:
