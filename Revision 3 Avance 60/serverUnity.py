@@ -12,22 +12,20 @@ tiempo = 0
 ancho = 24
 alto = 24
 trafficModel = None
-stepActual = 0
+currentStep = 0
 
 app = Flask("Traffic Model")
 
 
 @app.route('/init', methods=['POST', 'GET'])
 def initModel():
-    global numeroCarros, numeroSemaforos, tiempo, ancho, alto, trafficModel, stepActual
+    global numeroCarros, numeroSemaforos, tiempo, ancho, alto, trafficModel, currentStep
 
     if request.method == 'POST':
-        numeroCarros = int(request.form.get('carros'))
-        numeroSemaforos = int(request.form.get('semaforos'))
-        tiempo = int(request.form.get('time'))
-        ancho = int(request.form.get('width'))
-        alto = int(request.form.get('height'))
-        stepActual = 0
+        numeroCarros = int(request.form.get('numeroCarros'))
+        ancho = int(request.form.get('ancho'))
+        alto = int(request.form.get('alto'))
+        currentStep = 0
 
         print(request.form)
         print(numeroCarros, ancho, alto)
@@ -42,7 +40,7 @@ def getCarro():
     global trafficModel
 
     if request.method == 'GET':
-        pocisionesCarro = [{"id": str(c.unique_id),
+        pocisionesCarro = [{"id": str(a.unique_id),
                            "x": x, "y": 0, "z": z}
                            for (c, x, z) in trafficModel.grid.coord_iter()
                            for a in c if isinstance(a, Carro)]
@@ -104,9 +102,9 @@ def getEdificios():
 
 @app.route('/update', methods=['GET'])
 def updateModel():
-    global currentStep, almacenModel
+    global currentStep, trafficModel
     if request.method == 'GET':
-        almacenModel.step()
+        trafficModel.step()
         currentStep += 1
         return jsonify({'message': f'Model updated to step {currentStep}.',
                         'currentStep': currentStep})
