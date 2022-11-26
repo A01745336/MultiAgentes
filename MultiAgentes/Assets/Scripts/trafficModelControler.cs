@@ -136,6 +136,8 @@ public class trafficModelControler : MonoBehaviour
     string getEdificiosEndpoint = "/getEdificios";
     string sendConfigEndpoint = "/init";
     string updateEndpoint = "/update";
+    [SerializeField] TextAsset layout;
+    [SerializeField] int tileSize;
     CarroData carrosData;
     SemaforoData semaforosData;
     ParkingData parkingsData;
@@ -157,6 +159,8 @@ public class trafficModelControler : MonoBehaviour
 
     void Start()
     {
+        MakeTiles(layout.text);
+
         carrosData = new CarroData();
         semaforosData = new SemaforoData();
         parkingsData = new ParkingData();
@@ -204,6 +208,59 @@ public class trafficModelControler : MonoBehaviour
 
                 carros[carro.Key].transform.localPosition = interpolated;
                 if(direction != Vector3.zero) carros[carro.Key].transform.rotation = Quaternion.LookRotation(direction);
+            }
+        }
+    }
+
+    void MakeTiles(string tiles)
+    {
+        int x = 0;
+        int y = tiles.Split('\n').Length - 2;
+        Debug.Log(y);
+
+        Vector3 position;
+        GameObject tile;
+
+        for (int i = 0; i < tiles.Length; i++) {
+            if (tiles[i] == '>' || tiles[i] == '<') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(roadPrefab, position, Quaternion.identity);
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == 'v' || tiles[i] == '^') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(roadPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == 's') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(roadPrefab, position, Quaternion.identity);
+                tile.transform.parent = transform;
+                tile = Instantiate(semaforoPrefab, position, Quaternion.identity);
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == 'S') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(roadPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.parent = transform;
+                tile = Instantiate(semaforoPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == 'D') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(edificioPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(1, UnityEngine.Random.Range(0.5f, 2.0f), 1);
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == '#') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(edificioPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(1, UnityEngine.Random.Range(0.5f, 2.0f), 1);
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == '\n') {
+                x = 0;
+                y -= 1;
             }
         }
     }

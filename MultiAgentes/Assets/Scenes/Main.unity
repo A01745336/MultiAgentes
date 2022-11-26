@@ -2160,6 +2160,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87262948f7e19cf4caf5d1efee77ddac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layout: {fileID: 4900000, guid: 813fb03bd926ab345a651e60d6ca752b, type: 3}
+  tileSize: 1
   carroPrefab: {fileID: 7885734493783113706, guid: b5fb083320283fb449b09b69f4f6cc36, type: 3}
   semaforoPrefab: {fileID: 804946525495774756, guid: d1899d4baa2fb804bbdd8b3af43964f9, type: 3}
   parkingPrefab: {fileID: 1319987198987008830, guid: 8303389a34889fb4590d9f8abc527db9, type: 3}
