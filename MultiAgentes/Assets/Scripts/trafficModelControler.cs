@@ -98,7 +98,7 @@ public class trafficModelControler : MonoBehaviour
 
     bool updated = false, started = false;
 
-    public GameObject carroPrefab, semaforoPrefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, piso;
+    public GameObject carroPrefab, semaforo1Prefab, semaforo2Prefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, crucePeatonalPrefab, piso;
     public int numeroCarros, ancho, alto;
     public float timeToUpdate = 5.0f;
     private float timer, dt;
@@ -177,18 +177,30 @@ public class trafficModelControler : MonoBehaviour
                 x += 1;
             } else if (tiles[i] == 's') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
-                tile = Instantiate(roadPrefab, position, Quaternion.identity);
+                tile = Instantiate(crucePeatonalPrefab, position, Quaternion.Euler(0, 90, 0));
                 tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
-                tile.transform.parent = transform;
-                tile = Instantiate(semaforoPrefab, position, Quaternion.identity);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'S') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
-                tile = Instantiate(roadPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile = Instantiate(crucePeatonalPrefab, position, Quaternion.identity);
                 tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
                 tile.transform.parent = transform;
-                tile = Instantiate(semaforoPrefab, position, Quaternion.Euler(0, 90, 0));
+                x += 1;
+            }else if (tiles[i] == 'c') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(pavimentoPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
+                tile.transform.parent = transform;
+                tile = Instantiate(semaforo1Prefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.parent = transform;
+                x += 1;
+            } else if (tiles[i] == 'C') {
+                position = new Vector3(x * tileSize, 0, y * tileSize);
+                tile = Instantiate(pavimentoPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
+                tile.transform.parent = transform;
+                tile = Instantiate(semaforo1Prefab, position, Quaternion.identity);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'P') {
@@ -241,11 +253,17 @@ public class trafficModelControler : MonoBehaviour
                 tile = Instantiate(esquinaPrefab, position, Quaternion.Euler(0, 180, 0));
                 tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
                 tile.transform.parent = transform;
+                tile = Instantiate(lamparaPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'x') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
                 tile = Instantiate(esquinaPrefab, position, Quaternion.Euler(0, 270, 0));
                 tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
+                tile.transform.parent = transform;
+                tile = Instantiate(lamparaPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 tile.transform.parent = transform;
                 x += 1;
             }else if (tiles[i] == 'Y') {
@@ -253,11 +271,17 @@ public class trafficModelControler : MonoBehaviour
                 tile = Instantiate(esquinaPrefab, position, Quaternion.Euler(0, 90, 0));
                 tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
                 tile.transform.parent = transform;
+                tile = Instantiate(lamparaPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'y') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
                 tile = Instantiate(esquinaPrefab, position, Quaternion.Euler(0, 0, 0));
                 tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
+                tile.transform.parent = transform;
+                tile = Instantiate(lamparaPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == '\n') {
