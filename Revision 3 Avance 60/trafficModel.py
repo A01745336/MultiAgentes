@@ -1,4 +1,5 @@
 import mesa
+import random
 
 
 class Carro(mesa.Agent):
@@ -8,16 +9,17 @@ class Carro(mesa.Agent):
         self.direccion = None
         self.carril = None
         self.destinos = [(2, 15), (3, 19), (3, 22), (5, 4),
-                        (5, 15), (10, 7), (12, 4), (12, 15),
-                        (12, 20), (18, 14), (18, 20), (19, 2),
-                        (21, 6), (21, 22)]
+                         (5, 15), (10, 7), (12, 4), (12, 15),
+                         (12, 20), (18, 14), (18, 20), (19, 2),
+                         (21, 5), (21, 22)]
         self. destiny = None
         self.vuelta = False
         # global vuelta = random.randint(1, 101)
         # global cambioCarril = random.randint(1, 101)
-    
+
     def setDirection(self):
-        #Descubrir forma de manejar 
+        # Descubrir forma de manejar
+        ...
 
     def moverBajando(self):
         nuevaPosicion = (self.pos[0], self.pos[1] - 1)
@@ -40,15 +42,80 @@ class Carro(mesa.Agent):
         self.destiny = random.choice(self.destinos)
 
     def seleccionRuta(self):
-        if(self.pos[0] == 1 and self.pos[1] != 1):
-            self.estado = 0
-        elif(self.pos[1] == 1 and self.pos[0] == 1):
-            self.estado = 1
-        elif(self.pos[0] == 22 and self.pos[1] != 23):
-            self.estado = 2
-        elif(self.pos[0] == 22 and self.pos[1] != 24):
-            self.estado = 3
+        if(self.pos[0] == 0):
+            if(self.pos[1] != 0):
+                self.estado = 0
+            elif(self.pos[1] == 0):
+                self.estado = 1
 
+        elif(self.pos[0] == 1):
+            if(self.pos[1] != 1):
+                self.estado = 0
+            elif(self.pos[1] == 1):
+                self.estado = 1
+
+        elif(self.pos[0] == 22):
+            if(self.pos[1] != 23):
+                self.estado = 2
+            elif(self.pos[1] == 23):
+                self.estado = 3
+
+        elif(self.pos[0] == 23):
+            if(self.pos[1] != 24):
+                self.estado = 2
+            elif(self.pos[1] == 24):
+                self.estado = 3
+
+        elif(self.pos[0] == 6 or self.pos[0] == 7):
+            if(self.pos[1] > 12 and self.pos[1] <= 16):
+                self.estado = 2
+            elif(self.pos[1] <= 7 and self.pos[1] > 2):
+                self.estado = 0
+
+        elif(self.pos[0] == 13 or self.pos[0] == 14):
+            if(self.pos[1] <= 22 and self.pos[1] > 13):
+                self.estado = 0
+            elif(self.pos[1] <= 7 and self.pos[1] > 2):
+                self.estado = 0
+
+        elif(self.pos[0] == 16 or self.pos[0] == 17):
+            if(self.pos[1] <= 22 and self.pos[1] > 13):
+                self.estado = 2
+            elif(self.pos[1] <= 7 and self.pos[1] > 2):
+                self.estado = 2
+
+        if(self.pos[1] == 23):
+            if(self.pos[0] != 1):
+                self.estado = 3
+
+        elif(self.pos[1] == 1):
+            if(self.pos[0] != 22):
+                self.estado = 1
+
+        elif(self.pos[1] == 17 or self.pos[1] == 18):
+            if(self.pos[0] <= 12 and self.pos[0] > 2):
+                self.estado = 3
+
+        elif(self.pos[1] == 11 or self.pos[1] == 12):
+            if(self.pos[0] <= 21 and self.pos[0] > 2):
+                self.estado = 3
+
+        elif(self.pos[1] == 8 or self.pos[1] == 9):
+            if(self.pos[0] >= 2 and self.pos[0] < 21):
+                self.estado = 3
+
+    def empezarManejo(self):
+        if (self.pos in self.model.parkings):
+            salidasPosibles = self.model.grid.get_neighborhood(
+                self.pos,
+                moore=False,
+                include_center=False,
+                radius=1)
+            for i in salidasPosibles:
+                cellmates = self.model.grid.get_cell_list_contents(i)
+                for j in cellmates:
+                    if type(j) == Roads:
+                        self.model.grid.move_agent(self, i)
     # def selecionCarril(self):
     #    if(self.selecionCarril == 0 and cambioCarril >= 50):
     #        self.carril = 1
@@ -57,6 +124,7 @@ class Carro(mesa.Agent):
 
     def step(self) -> None:
         # self.selecionCarril()
+        self.empezarManejo()
         self.seleccionRuta()
         if(self.estado == 0):
             self.moverBajando()
@@ -66,8 +134,9 @@ class Carro(mesa.Agent):
             self.moverSubiendo()
         elif(self.estado == 3):
             self.moverIzquierda()
+        elif(self.estado == 4):
+            self.model.grid.move_agent(self, self.pos)
 
-    
 
 class Semaforo(mesa.Agent):
     def __init__(self, unique_id: str, model: mesa.Model) -> None:
@@ -96,7 +165,7 @@ class TrafficModel(mesa.Model):
         self.parkings: list[tuple] = [(2, 15), (3, 19), (3, 22), (5, 4),
                                       (5, 15), (10, 7), (12, 4), (12, 15),
                                       (12, 20), (18, 14), (18, 20), (19, 2),
-                                      (21, 6), (21, 22)]
+                                      (21, 5), (21, 22)]
         self.roads: list[tuple] = []
         self.schedule = mesa.time.SimultaneousActivation(self)
         self.time = time
@@ -105,21 +174,7 @@ class TrafficModel(mesa.Model):
         self.cars = carros
         self.lights = semaforos
 
-        auto = Carro("Carro " + str(self.next_id()), self)
-        self.schedule.add(auto)
-        self.grid.place_agent(auto, (1, 24))
-
-        auto = Carro("Carro " + str(self.next_id()), self)
-        self.schedule.add(auto)
-        self.grid.place_agent(auto, (22, 24))
-
-        auto = Carro("Carro " + str(self.next_id()), self)
-        self.schedule.add(auto)
-        self.grid.place_agent(auto, (22, 1))
-
-        auto = Carro("Carro " + str(self.next_id()), self)
-        self.schedule.add(auto)
-        self.grid.place_agent(auto, (1, 1))
+        salida = self.parkings.copy()
 
         for i in range(len(self.parkings)):
             x = self.parkings[i][0]
@@ -227,13 +282,13 @@ class TrafficModel(mesa.Model):
                 self.schedule.add(road)
                 self.grid.place_agent(road, pos)
 
-        for x in range(12, 14):
+        for x in range(13, 15):
             pos = (x, 10)
             self.roads.append(pos)
             road = Roads(self.next_id(), self)
             self.schedule.add(road)
             self.grid.place_agent(road, (x, 10))
-        for x in range(17, 19):
+        for x in range(16, 18):
             pos = (x, 10)
             self.roads.append(pos)
             road = Roads(self.next_id(), self)
@@ -247,6 +302,13 @@ class TrafficModel(mesa.Model):
                     build = Edificios(self.next_id(), self)
                     self.schedule.add(build)
                     self.grid.place_agent(build, pos)
+
+        while(len(salida) > 0):
+            lugarSalida = random.choice(salida)
+            auto = Carro("Carro " + str(self.next_id()), self)
+            self.schedule.add(auto)
+            self.grid.place_agent(auto, lugarSalida)
+            salida.remove(lugarSalida)
 
     def step(self) -> None:
         self.schedule.step()
