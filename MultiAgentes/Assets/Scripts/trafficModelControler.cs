@@ -78,54 +78,6 @@ public class ParkingData
     public ParkingData() => this.positions = new List<DatosParkings>();
 }
 
-[Serializable]
-public class DatosRoads
-{
-    public string id;
-    public float x, y, z;
-
-    public DatosRoads(string id, float x, float y, float z)
-    {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
-
-[Serializable]
-
-public class RoadData
-{
-    public List<DatosRoads> positions;
-
-    public RoadData() => this.positions = new List<DatosRoads>();
-}
-
-[Serializable]
-public class DatosEdificios
-{
-    public string id;
-    public float x, y, z;
-
-    public DatosEdificios(string id, float x, float y, float z)
-    {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
-
-[Serializable]
-
-public class EdificioData
-{
-    public List<DatosEdificios> positions;
-
-    public EdificioData() => this.positions = new List<DatosEdificios>();
-}
-
 public class trafficModelControler : MonoBehaviour
 {
     string serverUrl = "http://localhost:8585";
@@ -141,13 +93,9 @@ public class trafficModelControler : MonoBehaviour
     CarroData carrosData;
     SemaforoData semaforosData;
     ParkingData parkingsData;
-    RoadData roadsData;
-    EdificioData edificiosData;
     Dictionary<string, GameObject> carros;
     Dictionary<string, GameObject> semaforos;
     Dictionary<string, GameObject> parkings;
-    Dictionary<string, GameObject> roads;
-    Dictionary<string, GameObject> edificios;
     Dictionary<string, Vector3> prevPositions, currPositions;
 
     bool updated = false, started = false;
@@ -164,8 +112,6 @@ public class trafficModelControler : MonoBehaviour
         carrosData = new CarroData();
         semaforosData = new SemaforoData();
         parkingsData = new ParkingData();
-        roadsData = new RoadData();
-        edificiosData = new EdificioData();
 
         prevPositions = new Dictionary<string, Vector3>();
         currPositions = new Dictionary<string, Vector3>();
@@ -173,8 +119,6 @@ public class trafficModelControler : MonoBehaviour
         carros = new Dictionary<string, GameObject>();
         semaforos = new Dictionary<string, GameObject>();
         parkings = new Dictionary<string, GameObject>();
-        roads = new Dictionary<string, GameObject>();
-        edificios = new Dictionary<string, GameObject>();
 
         piso.transform.localScale = new Vector3((float)(ancho + 1) / 10, 1, (float)(alto + 1) / 10);
         piso.transform.localPosition = new Vector3((float)ancho/2-0.5f, 0, (float)alto/2-0.5f);
@@ -216,7 +160,7 @@ public class trafficModelControler : MonoBehaviour
     {
         int x = 0;
         int y = tiles.Split('\n').Length - 2;
-        Debug.Log(y);
+        Debug.Log("Las y" + y);
 
         Vector3 position;
         GameObject tile;
@@ -225,16 +169,19 @@ public class trafficModelControler : MonoBehaviour
             if (tiles[i] == '>' || tiles[i] == '<') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
                 tile = Instantiate(roadPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'v' || tiles[i] == '^') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
                 tile = Instantiate(roadPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 's') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
                 tile = Instantiate(roadPrefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
                 tile.transform.parent = transform;
                 tile = Instantiate(semaforoPrefab, position, Quaternion.identity);
                 tile.transform.parent = transform;
@@ -242,20 +189,21 @@ public class trafficModelControler : MonoBehaviour
             } else if (tiles[i] == 'S') {
                 position = new Vector3(x * tileSize, 0, y * tileSize);
                 tile = Instantiate(roadPrefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
                 tile.transform.parent = transform;
                 tile = Instantiate(semaforoPrefab, position, Quaternion.Euler(0, 90, 0));
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'D') {
-                position = new Vector3(x * tileSize, 0, y * tileSize);
+                position = new Vector3(x * tileSize - 0.5f, 0, y * tileSize + 0.2f);
                 tile = Instantiate(edificioPrefab, position, Quaternion.identity);
-                tile.transform.localScale = new Vector3(1, UnityEngine.Random.Range(0.5f, 2.0f), 1);
+                tile.transform.localScale = new Vector3(0.1f, UnityEngine.Random.Range(0.1f, 0.5f), 0.1f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == '#') {
-                position = new Vector3(x * tileSize, 0, y * tileSize);
+                position = new Vector3(x * tileSize - 0.5f, 0, y * tileSize + 0.2f);
                 tile = Instantiate(edificioPrefab, position, Quaternion.identity);
-                tile.transform.localScale = new Vector3(1, UnityEngine.Random.Range(0.5f, 2.0f), 1);
+                tile.transform.localScale = new Vector3(0.1f, UnityEngine.Random.Range(0.1f, 0.3f), 0.1f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == '\n') {
