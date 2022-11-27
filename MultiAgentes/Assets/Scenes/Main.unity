@@ -2262,8 +2262,8 @@ MonoBehaviour:
   carroPrefab: {fileID: 7885734493783113706, guid: b5fb083320283fb449b09b69f4f6cc36, type: 3}
   semaforoPrefab: {fileID: 804946525495774756, guid: d1899d4baa2fb804bbdd8b3af43964f9, type: 3}
   parkingPrefab: {fileID: 1319987198987008830, guid: 8303389a34889fb4590d9f8abc527db9, type: 3}
-  roadPrefab: {fileID: 197811113750230208, guid: 171a16aaf506762499f56f9d68c3069e, type: 3}
-  edificioPrefab: {fileID: 1319987198987008830, guid: 8303389a34889fb4590d9f8abc527db9, type: 3}
+  roadPrefab: {fileID: 7196508921735924045, guid: 4493beda3e6860643b2f5914c014975e, type: 3}
+  edificioPrefab: {fileID: 2112852442836141764, guid: 60152261e57954e41b75073c9ab10d60, type: 3}
   piso: {fileID: 5834077278601538547, guid: 1eee3ee6d882eda4185f26c3c6b3161b, type: 3}
   numeroCarros: 4
   ancho: 24
