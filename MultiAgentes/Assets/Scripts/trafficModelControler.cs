@@ -193,6 +193,7 @@ public class trafficModelControler : MonoBehaviour
                 tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
                 tile.transform.parent = transform;
                 tile = Instantiate(semaforo1Prefab, position, Quaternion.Euler(0, 90, 0));
+                tile.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'C') {
@@ -201,6 +202,7 @@ public class trafficModelControler : MonoBehaviour
                 tile.transform.localScale = new Vector3(0.5f, 0.25f, 0.5f);
                 tile.transform.parent = transform;
                 tile = Instantiate(semaforo1Prefab, position, Quaternion.identity);
+                tile.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 tile.transform.parent = transform;
                 x += 1;
             } else if (tiles[i] == 'P') {
