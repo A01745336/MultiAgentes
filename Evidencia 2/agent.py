@@ -1,4 +1,5 @@
 from mesa import Agent
+from roadfuntionality import *
 import random
 
 
@@ -113,6 +114,9 @@ class Car(Agent):
         elif(self.pos[1] == 8 or self.pos[1] == 9):
             if(self.pos[0] >= 2 and self.pos[0] < 21):
                 self.estado = 1
+
+    def obtenerRutaObtima(self):
+        rutaOptima = shortest_path()
 
     def empezarManejo(self):
         if (self.pos in self.model.parkings):
