@@ -6,7 +6,7 @@ class Car(Agent):
     """
     Agent that moves randomly.
     Attributes:
-        unique_id: Agent's ID 
+        unique_id: Agent's ID
         direction: Randomly chosen direction chosen from one of eight directions
     """
     def __init__(self, unique_id, model):
@@ -34,7 +34,6 @@ class Car(Agent):
     def moverBajando(self):
         nuevaPosicion = (self.pos[0], self.pos[1] - 1)
         self.model.grid.move_agent(self, nuevaPosicion)
-        # self.movimientos += 1
 
     def moverDerecha(self):
         nuevaPosicion = (self.pos[0] + 1, self.pos[1])
@@ -112,7 +111,7 @@ class Car(Agent):
 
         elif(self.pos[1] == 8 or self.pos[1] == 9):
             if(self.pos[0] >= 2 and self.pos[0] < 21):
-                self.estado = 3
+                self.estado = 1
 
     def empezarManejo(self):
         if (self.pos in self.model.parkings):
@@ -133,26 +132,58 @@ class Car(Agent):
     #        self.carril = 0
 
     def darVuelta(self):
-        if(self.pos == (1, 9)):
+        if(self.pos == (1, 9) or self.pos == (17, 8)):
             probabilidadVuelta = random.randint(1, 101)
             if(probabilidadVuelta >= 35):
                 self.estado = 1
-    
-    def manejar(self):
+        elif(self.pos == (13, 18) or self.pos == (13, 12) or self.pos == (16, 11)):
+            probabilidadVuelta = random.randint(1, 101)
+            if(probabilidadVuelta >= 35):
+                self.estado = 3
+        elif(self.pos == (6, 8) or self.pos == (13, 8) or self.pos == (14, 23)):
+            probabilidadVuelta = random.randint(1, 101)
+            if(probabilidadVuelta >= 35):
+                self.estado = 0
+        elif(self.pos == (17, 12) or self.pos == (16, 1)):
+            probabilidadVuelta = random.randint(1, 101)
+            if(probabilidadVuelta >= 35):
+                self.estado = 2
+
+    def detener(self):
         if(self.estado == 0):
-            self.moverBajando()
+            cell = (self.pos[0], self.pos[1] - 1)
         elif(self.estado == 1):
-            self.moverDerecha()
+            cell = (self.pos[0] + 1, self.pos[1])
         elif(self.estado == 2):
-            self.moverSubiendo()
+            cell = (self.pos[0], self.pos[1] + 1)
         elif(self.estado == 3):
-            self.moverIzquierda()
-        elif(self.estado == 4):
+            cell = (self.pos[0] - 1, self.pos[1])
+
+        cellmates = self.model.grid.get_cell_list_contents(cell)
+        for j in cellmates:
+            if type(j) == Traffic_Light:
+                return j.state
+            elif type(j) == Car:
+                return True
+
+    def manejar(self):
+        self.darVuelta()
+        posibleDetenecion = self.detener()
+        if not posibleDetenecion:
+            if(self.estado == 0):
+                self.moverBajando()
+            elif(self.estado == 1):
+                self.moverDerecha()
+            elif(self.estado == 2):
+                self.moverSubiendo()
+            elif(self.estado == 3):
+                self.moverIzquierda()
+        elif(self.estado == 5):
             self.model.grid.move_agent(self, self.pos)
 
     def step(self) -> None:
         # self.selecionCarril()
-        if (self.model.schedule.steps == 2):
+        if (self.model.schedule.steps < 2):
             self.empezarManejo()
         else:
             self.seleccionRuta()
@@ -164,7 +195,7 @@ class Traffic_Light(Agent):
     """
     Traffic light. Where the traffic lights are in the grid.
     """
-    def __init__(self, unique_id, model, state = False, timeToChange = 10):
+    def __init__(self, unique_id, model, state=False, timeToChange=10):
         super().__init__(unique_id, model)
         """
         Creates a new Traffic light.
@@ -176,14 +207,71 @@ class Traffic_Light(Agent):
         """
         self.state = state
         self.timeToChange = timeToChange
+        self.mismoSemaforo = None
+        self.semaforoCruce = None
+        self.semaforosX = []
+        self.semaforosY = []
+        self.carros = 0
 
     def step(self):
-        """ 
+        """
         To change the state (green or red) of the traffic light in case you consider the time to change of each traffic light.
         """
-        # if self.model.schedule.steps % self.timeToChange == 0:
-        #     self.state = not self.state
-        pass
+        if(self.pos[0] == 0 or self.pos[0] == 1 or self.pos[0] == 6 or
+           self.pos[0] == 7 or self.pos[0] == 13 or self.pos[0] == 14 or
+           self.pos[0] == 16 or self.pos[0] == 17 or self.pos[0] == 22 or
+           self.pos[0] == 23):
+            self.semaforosX.append(self)
+        else:
+            self.semaforosY.append(self)
+
+        if self.mismoSemaforo is None:
+            posibleSemaforo = self.model.grid.get_neighborhood(
+                self.pos,
+                moore=False,
+                include_center=False,
+                radius=1)
+            for i in posibleSemaforo:
+                cellmates = self.model.grid.get_cell_list_contents(i)
+                for j in cellmates:
+                    if type(j) == Traffic_Light:
+                        self.mismoSemaforo = j
+        if self.semaforoCruce is None:
+            posibleSemaforo = self.model.grid.get_neighborhood(
+                self.pos,
+                moore=True,
+                include_center=False,
+                radius=1)
+            for i in posibleSemaforo:
+                cellmates = self.model.grid.get_cell_list_contents(i)
+                for j in cellmates:
+                    if type(j) == Traffic_Light and j != self.mismoSemaforo:
+                        self.semaforoCruce = j
+        
+        # if self.state is False:
+        #     print(f'Carros antes de contar {self.carros}')
+        #     self.contarCarros()
+        #     print(f'Carros despues de contar {self.carros}')
+
+    def contarCarros(self):
+        if self.mismoSemaforo is None:
+            posibleSemaforo = self.model.grid.get_neighborhood(
+                self.pos,
+                moore=False,
+                include_center=False,
+                radius=3)
+            if posibleSemaforo.pos[0] == self.pos[0] and self in self.semaforosX:
+                for i in posibleSemaforo:
+                    cellmates = self.model.grid.get_cell_list_contents(i)
+                    for j in cellmates:
+                        if type(j) == Car:
+                            self.carros += 1
+            elif posibleSemaforo.pos[1] == self.pos[1] and self in self.semaforosY:
+                for i in posibleSemaforo:
+                    cellmates = self.model.grid.get_cell_list_contents(i)
+                    for j in cellmates:
+                        if type(j) == Car:
+                            self.carros += 1
 
 class Destination(Agent):
     """
@@ -195,6 +283,7 @@ class Destination(Agent):
     def step(self):
         pass
 
+
 class Obstacle(Agent):
     """
     Obstacle agent. Just to add obstacles to the grid.
@@ -204,6 +293,7 @@ class Obstacle(Agent):
 
     def step(self):
         pass
+
 
 class Road(Agent):
     """

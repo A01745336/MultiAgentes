@@ -23,7 +23,7 @@ def agent_portrayal(agent):
         portrayal["Layer"] = 0
 
     if (isinstance(agent, Traffic_Light)):
-        portrayal["Color"] = "red" if not agent.state else "green"
+        portrayal["Color"] = "red" if agent.state else "green"
         portrayal["Layer"] = 0
         portrayal["w"] = 0.8
         portrayal["h"] = 0.8
@@ -53,7 +53,6 @@ with open('Base.txt') as baseFile:
 
 model_params = {"N": 5}
 
-print(width, height)
 grid = CanvasGrid(agent_portrayal, width, height, 500, 500)
 
 server = ModularServer(RandomModel, [grid], "Traffic Base", model_params)
