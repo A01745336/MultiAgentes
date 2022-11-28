@@ -20,10 +20,11 @@ class Car(Agent):
         self.estado = None
         self.direccion = None
         self.carril = None
-        self.destinos = [(2, 15), (3, 19), (3, 22), (5, 4),
-                         (5, 15), (10, 7), (12, 4), (12, 15),
-                         (12, 20), (18, 14), (18, 20), (19, 2),
-                         (21, 5), (21, 22)]
+        #Lista de las ubicaciones de los estacionamientos
+        self.destinos = [(21, 9), (4,5), (4, 12), (5, 21),
+                         (7, 10), (14, 18), (15, 2), (15, 5),
+                         (15, 12), (14, 3), (20, 12), (20, 18),
+                         (22, 3), (22, 21)]
         self.destiny = None
         self.vuelta = 0
 

@@ -46,7 +46,7 @@ def agent_portrayal(agent):
 width = 0
 height = 0
 
-with open('Base.txt') as baseFile:
+with open('/Users/paoladanaelopezperez/Documents/GitHub/MultiAgentes/Revision_3_Avance_60/Base.txt') as baseFile:
     lines = baseFile.readlines()
     width = len(lines[0])-1
     height = len(lines)
