@@ -26,6 +26,7 @@ class Car(Agent):
                          (21, 5), (21, 22)]
         self.destiny = None
         self.vuelta = 0
+        self.posInicial = None
 
     def setDirection(self):
         # Descubrir forma de manejar

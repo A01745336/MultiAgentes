@@ -4,20 +4,8 @@ import sys
 from generic_search import bfs, Node, node_to_path
 
 sys.path.insert(0, '..')
-    
-def shortest_path(initial_point: str, final_point: str, city: Graph):
-    bfs_result: Optional[Node[str]] = bfs(initial_point, 
-                                            lambda x: x == final_point, 
-                                            city.neighbors_for_vertex)
-    if bfs_result is None:
-        print("No solution found using breadth-first search!")
-    else:
-        path: list[str] = node_to_path(bfs_result)
-        print(f"Path from {initial_point} to {final_point}:")
-        print(path)
 
-if __name__ == '__main__':
-    city: Graph[tuple] = Graph([(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),
+city: Graph[tuple] = Graph([(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),
                                         (2,1),(2,6),(2,7),(2,13),(2,14),(2,16),(2,17),(2,19),(2,22),(2,23),
                                         (3,1),(3,6),(3,7),(3,13),(3,14),(3,16),(3,17),(3,22),(3,23),
                                         (4,1),(4,5),(4,6),(4,7),(4,12),(4,13),(4,14),(4,16),(4,17),(4,22),(4,23),
@@ -42,6 +30,19 @@ if __name__ == '__main__':
                                         (23,1),(23,2),(23,3),(23,4),(23,5),(23,6),(23,7),(23,8),(23,9),(23,10),(23,11),(23,12),(23,13),(23,14),(23,15),(23,16),(23,17),(23,18),(23,19),(23,20),(23,21),(23,22),(23,23)
 
                                     ])
+    
+def shortest_path(initial_point: str, final_point: str, city: Graph):
+    bfs_result: Optional[Node[str]] = bfs(initial_point, 
+                                            lambda x: x == final_point, 
+                                            city.neighbors_for_vertex)
+    if bfs_result is None:
+        print("No solution found using breadth-first search!")
+    else:
+        path: list[str] = node_to_path(bfs_result)
+        print(f"Path from {initial_point} to {final_point}:")
+        print(path)
+
+
 
 #LINEA AMARILLA IZQ
 city.add_edge_by_vertices((23,1), (22,1))
@@ -366,8 +367,8 @@ city.add_edge_by_vertices((15,6), (16,6))
 city.add_edge_by_vertices((16,6), (17,6))
 
 
-
-print(city)
-
-#shortest_path((22,3),(2,19),city)
-shortest_path((22,3),(19,3),city)
+if __name__ == '__main__':
+    #print(city)
+    #shortest_path((22,3),(2,19),city)
+    #shortest_path((22,3),(19,3),city)
+    ...
