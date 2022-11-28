@@ -116,7 +116,19 @@ class Car(Agent):
                 self.estado = 1
 
     def obtenerRutaObtima(self):
-        rutaOptima = shortest_path()
+        rutaOptima = shortest_path(self.pos,self.destiny)
+        return rutaOptima
+    
+    def manejoInteligente(self):
+        x = self.obtenerRutaOptima()
+        waze = x[1:]
+
+        self.empezarManejo()
+        
+
+
+
+
 
     def empezarManejo(self):
         if (self.pos in self.model.parkings):
