@@ -31,7 +31,7 @@ city: Graph[tuple] = Graph([(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9
 
                                     ])
     
-def shortest_path(initial_point: str, final_point: str, city: Graph):
+def shortest_path(initial_point: str, final_point: str):
     bfs_result: Optional[Node[str]] = bfs(initial_point, 
                                             lambda x: x == final_point, 
                                             city.neighbors_for_vertex)
@@ -39,8 +39,9 @@ def shortest_path(initial_point: str, final_point: str, city: Graph):
         print("No solution found using breadth-first search!")
     else:
         path: list[str] = node_to_path(bfs_result)
-        print(f"Path from {initial_point} to {final_point}:")
-        print(path)
+        #print(f"Path from {initial_point} to {final_point}:")
+        #print(path)
+        return(path)
 
 
 
@@ -370,5 +371,5 @@ city.add_edge_by_vertices((16,6), (17,6))
 if __name__ == '__main__':
     #print(city)
     #shortest_path((22,3),(2,19),city)
-    #shortest_path((22,3),(19,3),city)
+    #shortest_path((22,3),(19,3))
     ...
