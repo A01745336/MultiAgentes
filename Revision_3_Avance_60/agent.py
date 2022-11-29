@@ -203,7 +203,7 @@ class Traffic_Light(Agent):
             unique_id: The agent's ID
             model: Model reference for the agent
             state: Whether the traffic light is green or red
-            timeToChange: After how many step should the traffic light change color 
+            timeToChange: After how many step should the traffic light change color
         """
         self.state = state
         self.timeToChange = timeToChange
@@ -247,7 +247,7 @@ class Traffic_Light(Agent):
                 for j in cellmates:
                     if type(j) == Traffic_Light and j != self.mismoSemaforo:
                         self.semaforoCruce = j
-        
+
         # if self.state is False:
         #     print(f'Carros antes de contar {self.carros}')
         #     self.contarCarros()
@@ -272,6 +272,7 @@ class Traffic_Light(Agent):
                     for j in cellmates:
                         if type(j) == Car:
                             self.carros += 1
+
 
 class Destination(Agent):
     """
@@ -299,7 +300,7 @@ class Road(Agent):
     """
     Road agent. Determines where the cars can move, and in which direction.
     """
-    def __init__(self, unique_id, model, direction= "Left"):
+    def __init__(self, unique_id, model, direction="Left"):
         """
         Creates a new road.
         Args:

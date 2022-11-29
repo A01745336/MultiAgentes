@@ -26,7 +26,7 @@ class RandomModel(Model):
                                           (5, 15), (10, 7), (12, 4), (12, 15),
                                           (12, 20), (18, 14), (18, 20), (19, 2),
                                           (21, 5), (21, 22)]
-            self.grid = MultiGrid(self.width, self.height, torus=False) 
+            self.grid = MultiGrid(self.width, self.height, torus=False)
             self.schedule = RandomActivation(self)
 
             for r, row in enumerate(lines):
@@ -54,7 +54,7 @@ class RandomModel(Model):
         self.current_id = 0
 
         salida = self.parkings.copy()
-        while(len(salida) > 0):
+        while (len(salida) > 0):
             lugarSalida = random.choice(salida)
             auto = Car("Carro " + str(self.next_id()), self)
             self.schedule.add(auto)

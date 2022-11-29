@@ -105,7 +105,7 @@ public class trafficModelControler : MonoBehaviour
 
     void Start()
     {
-        MakeTiles(layout.text);
+        // MakeTiles(layout.text);
 
         carrosData = new CarroData();
         semaforosData = new SemaforoData();

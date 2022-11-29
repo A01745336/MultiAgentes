@@ -3,9 +3,11 @@
 # Equipo 5. Noviembre 2022
 
 from flask import Flask, request, jsonify
-from trafficModel import *
+from model import *
+from agent import *
 
 # Tamaño del tablero:
+nAgents = 0
 numeroCarros = 1
 numeroSemaforos = 12
 tiempo = 0
@@ -19,7 +21,8 @@ app = Flask("Traffic Model")
 
 @app.route('/init', methods=['POST', 'GET'])
 def initModel():
-    global numeroCarros, numeroSemaforos, tiempo, ancho, alto, trafficModel, currentStep
+    global numeroCarros, numeroSemaforos, tiempo
+    global ancho, alto, trafficModel, currentStep, nAgents
 
     if request.method == 'POST':
         numeroCarros = int(request.form.get('numeroCarros'))
@@ -29,8 +32,7 @@ def initModel():
 
         print(request.form)
         print(numeroCarros, ancho, alto)
-        trafficModel = TrafficModel(numeroCarros, numeroSemaforos,
-                                    tiempo, ancho, alto)
+        trafficModel = RandomModel(nAgents)
 
         return jsonify({"message": "Parametros recibidos, modelo iniciado."})
 
@@ -43,7 +45,7 @@ def getCarro():
         pocisionesCarro = [{"id": str(a.unique_id),
                            "x": x, "y": 0, "z": z}
                            for (c, x, z) in trafficModel.grid.coord_iter()
-                           for a in c if isinstance(a, Carro)]
+                           for a in c if isinstance(a, Car)]
 
         return jsonify({'positions': pocisionesCarro})
 
@@ -56,7 +58,7 @@ def getSemaforo():
         posicionesSemaforo = [{"id": str(s.unique_id),
                               "x": x, "y": 0, "z": z}
                               for (s, x, z) in trafficModel.grid.coord_iter()
-                              for a in s if isinstance(a, Semaforo)]
+                              for a in s if isinstance(a, Traffic_Light)]
 
         return jsonify({'positions': posicionesSemaforo})
 
@@ -69,7 +71,7 @@ def getParking():
         posicionesParking = [{"id": str(p.unique_id),
                              "x": x, "y": 0, "z": z}
                              for (p, x, z) in trafficModel.grid.coord_iter()
-                             for a in p if isinstance(a, Parking)]
+                             for a in p if isinstance(a, Destination)]
 
         return jsonify({'positions': posicionesParking})
 
@@ -82,7 +84,7 @@ def GetRoads():
         posicionesRoads = [{"id": str(r.unique_id),
                             "x": x, "y": 0, "z": z}
                            for (r, x, z) in trafficModel.grid.coord_iter()
-                           for a in r if isinstance(a, Roads)]
+                           for a in r if isinstance(a, Road)]
 
         return jsonify({'positions': posicionesRoads})
 
@@ -95,7 +97,7 @@ def getEdificios():
         posicionesEdificios = [{"id": str(e.unique_id),
                                 "x": x, "y": 0, "z": z}
                                for (e, x, z) in trafficModel.grid.coord_iter()
-                               for a in e if isinstance(a, Edificios)]
+                               for a in e if isinstance(a, Obstacle)]
 
         return jsonify({'positions': posicionesEdificios})
 
