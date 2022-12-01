@@ -217,7 +217,7 @@ class Traffic_Light(Agent):
         """
         To change the state (green or red) of the traffic light in case you consider the time to change of each traffic light.
         """
-        if(self.pos[0] == 0 or self.pos[0] == 1 or self.pos[0] == 6 or
+        if (self.pos[0] == 0 or self.pos[0] == 1 or self.pos[0] == 6 or
            self.pos[0] == 7 or self.pos[0] == 13 or self.pos[0] == 14 or
            self.pos[0] == 16 or self.pos[0] == 17 or self.pos[0] == 22 or
            self.pos[0] == 23):

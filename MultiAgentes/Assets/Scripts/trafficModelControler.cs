@@ -35,13 +35,15 @@ public class DatosSemaforos
 {
     public string id;
     public float x, y, z;
+    public bool semaforoActive;
 
-    public DatosSemaforos(string id, float x, float y, float z)
+    public DatosSemaforos(string id, float x, float y, float z, bool semaforoActive)
     {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.semaforoActive = semaforoActive;
     }
 }
 
@@ -88,6 +90,7 @@ public class trafficModelControler : MonoBehaviour
     string updateEndpoint = "/update";
     [SerializeField] TextAsset layout;
     [SerializeField] int tileSize;
+    public bool crearCiudad;
     CarroData carrosData;
     SemaforoData semaforosData;
     ParkingData parkingsData;
@@ -96,16 +99,17 @@ public class trafficModelControler : MonoBehaviour
     Dictionary<string, GameObject> parkings;
     Dictionary<string, Vector3> prevPositions, currPositions;
 
-    bool updated = false, started = false;
+    bool updated = false, started = false, startedSemaforo = false, updatedSemaforo = false;
 
-    public GameObject carroPrefab, semaforo1Prefab, semaforo2Prefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, crucePeatonalPrefab, piso;
+    public GameObject carroPrefab, luzSemaforoPrefab, semaforo1Prefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, crucePeatonalPrefab, piso;
     public int numeroCarros, ancho, alto;
     public float timeToUpdate = 5.0f;
     private float timer, dt;
 
     void Start()
     {
-        MakeTiles(layout.text);
+        if (crearCiudad)
+            MakeTiles(layout.text);
 
         carrosData = new CarroData();
         semaforosData = new SemaforoData();
@@ -303,6 +307,7 @@ public class trafficModelControler : MonoBehaviour
         else
         {
             StartCoroutine(GetCarrosData());
+            StartCoroutine(GetSemaforosData());
         }
     }
 
@@ -328,6 +333,7 @@ public class trafficModelControler : MonoBehaviour
             Debug.Log("Configuration upload complete!");
             Debug.Log("Getting Agents positions");
             StartCoroutine(GetCarrosData());
+            StartCoroutine(GetSemaforosData());
         }
     }
 
@@ -362,6 +368,38 @@ public class trafficModelControler : MonoBehaviour
 
             updated = true;
             if(!started) started = true;
+        }
+    }
+
+    IEnumerator GetSemaforosData()
+    {
+        UnityWebRequest www = UnityWebRequest.Get(serverUrl + getSemaforoEndpoint);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+            Debug.Log(www.error);
+        else
+        {
+            semaforosData = JsonUtility.FromJson<SemaforoData>(www.downloadHandler.text);
+
+            foreach(DatosSemaforos luzSemaforo in semaforosData.positions)
+            {
+                if (!startedSemaforo)
+                {
+                    Vector3 semaforoPos = new Vector3(luzSemaforo.x, luzSemaforo.y, luzSemaforo.z);
+                    semaforos[luzSemaforo.id] = Instantiate(luzSemaforoPrefab, new Vector3(luzSemaforo.x, luzSemaforo.y, luzSemaforo.z), Quaternion.identity);
+                }
+                else
+                {
+                    if (luzSemaforo.semaforoActive){
+                        semaforos[luzSemaforo.id].GetComponent<getChildSemaforo>().SetSemaforoRojo();
+                    } else {
+                        semaforos[luzSemaforo.id].GetComponent<getChildSemaforo>().SetSemaforoVerde();
+                    }
+                }
+            }
+
+            if (!startedSemaforo) startedSemaforo = true;
         }
     }
 }
