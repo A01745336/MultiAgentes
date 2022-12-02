@@ -8,7 +8,7 @@ from agent import *
 
 # Tamaño del tablero:
 nAgents = 0
-numeroCarros = 1
+numeroCarros = 100
 numeroSemaforos = 12
 tiempo = 0
 ancho = 24

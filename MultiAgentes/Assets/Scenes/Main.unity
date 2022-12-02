@@ -38953,7 +38953,7 @@ MonoBehaviour:
   lamparaPrefab: {fileID: 3810060720594510366, guid: 3f3aa08fb97eb9e4b97a601d785066d6, type: 3}
   crucePeatonalPrefab: {fileID: 8168612052969296708, guid: a8aa1c9340c22694b9f386f2c6349484, type: 3}
   piso: {fileID: 2420499871662325000, guid: 52cdaf348914fde419ae00e5afcc5422, type: 3}
-  numeroCarros: 4
+  numeroCarros: 100
   ancho: 24
   alto: 26
   timeToUpdate: 0.1

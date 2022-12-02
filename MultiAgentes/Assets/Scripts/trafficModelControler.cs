@@ -56,36 +56,11 @@ public class SemaforoData
     public SemaforoData() => this.positions = new List<DatosSemaforos>();
 }
 
-[Serializable]
-public class DatosParkings
-{
-    public string id;
-    public float x, y, z;
-
-    public DatosParkings(string id, float x, float y, float z)
-    {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
-
-[Serializable]
-
-public class ParkingData
-{
-    public List<DatosParkings> positions;
-
-    public ParkingData() => this.positions = new List<DatosParkings>();
-}
-
 public class trafficModelControler : MonoBehaviour
 {
     string serverUrl = "http://localhost:8585";
     string getCarroEndpoint = "/getCarro";
     string getSemaforoEndpoint = "/getSemaforo";
-    string getParkingEndpoint = "/getParking";
     string sendConfigEndpoint = "/init";
     string updateEndpoint = "/update";
     [SerializeField] TextAsset layout;
@@ -93,16 +68,15 @@ public class trafficModelControler : MonoBehaviour
     public bool crearCiudad;
     CarroData carrosData;
     SemaforoData semaforosData;
-    ParkingData parkingsData;
     Dictionary<string, GameObject> carros;
     Dictionary<string, GameObject> semaforos;
-    Dictionary<string, GameObject> parkings;
     Dictionary<string, Vector3> prevPositions, currPositions;
 
     bool updated = false, started = false, startedSemaforo = false, updatedSemaforo = false;
 
     public GameObject carroPrefab, luzSemaforoPrefab, semaforo1Prefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, crucePeatonalPrefab, piso;
-    public int numeroCarros, ancho, alto;
+    public int numeroCarros = 100;
+    public int ancho, alto;
     public float timeToUpdate = 5.0f;
     private float timer, dt;
 
@@ -113,14 +87,12 @@ public class trafficModelControler : MonoBehaviour
 
         carrosData = new CarroData();
         semaforosData = new SemaforoData();
-        parkingsData = new ParkingData();
 
         prevPositions = new Dictionary<string, Vector3>();
         currPositions = new Dictionary<string, Vector3>();
 
         carros = new Dictionary<string, GameObject>();
         semaforos = new Dictionary<string, GameObject>();
-        parkings = new Dictionary<string, GameObject>();
 
         piso.transform.localScale = new Vector3((float)(ancho + 1) / 10, 1, (float)(alto + 1) / 10);
         piso.transform.localPosition = new Vector3((float)ancho/2-0.5f, 0, (float)alto/2-0.5f);
