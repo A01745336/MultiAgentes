@@ -64,15 +64,15 @@ class RandomModel(Model):
             self.grid.place_agent(auto, lugarSalida)
             salida.remove(lugarSalida)
             self.cars -= 1
+        while self.cars > 0:
+            auto = Car("Carro " + str(self.next_id()), self)
+            self.schedule.add(auto)
+            self.grid.place_agent(auto, (22, 0))
+            self.cars -= 1
 
     def step(self):
         '''Advance the model by one step.'''
         # if self.schedule.steps % 10 == 0:
         #     for agent in self.traffic_lights:
         #         agent.state = not agent.state
-        if self.cars > 0:
-            auto = Car("Carro " + str(self.next_id()), self)
-            self.schedule.add(auto)
-            self.grid.place_agent(auto, (22, 0))
-            self.cars -= 1
         self.schedule.step()

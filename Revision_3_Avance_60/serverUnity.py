@@ -7,7 +7,7 @@ from model import *
 from agent import *
 
 # Tamaño del tablero:
-nAgents = 0
+nAgents = 100
 numeroCarros = 100
 numeroSemaforos = 12
 tiempo = 0
