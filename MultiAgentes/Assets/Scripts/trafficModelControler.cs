@@ -35,13 +35,15 @@ public class DatosSemaforos
 {
     public string id;
     public float x, y, z;
+    public bool semaforoActive;
 
-    public DatosSemaforos(string id, float x, float y, float z)
+    public DatosSemaforos(string id, float x, float y, float z, bool semaforoActive)
     {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.semaforoActive = semaforoActive;
     }
 }
 
@@ -54,69 +56,43 @@ public class SemaforoData
     public SemaforoData() => this.positions = new List<DatosSemaforos>();
 }
 
-[Serializable]
-public class DatosParkings
-{
-    public string id;
-    public float x, y, z;
-
-    public DatosParkings(string id, float x, float y, float z)
-    {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
-
-[Serializable]
-
-public class ParkingData
-{
-    public List<DatosParkings> positions;
-
-    public ParkingData() => this.positions = new List<DatosParkings>();
-}
-
 public class trafficModelControler : MonoBehaviour
 {
     string serverUrl = "http://localhost:8585";
     string getCarroEndpoint = "/getCarro";
     string getSemaforoEndpoint = "/getSemaforo";
-    string getParkingEndpoint = "/getParking";
     string sendConfigEndpoint = "/init";
     string updateEndpoint = "/update";
     [SerializeField] TextAsset layout;
     [SerializeField] int tileSize;
+    public bool crearCiudad;
     CarroData carrosData;
     SemaforoData semaforosData;
-    ParkingData parkingsData;
     Dictionary<string, GameObject> carros;
     Dictionary<string, GameObject> semaforos;
-    Dictionary<string, GameObject> parkings;
     Dictionary<string, Vector3> prevPositions, currPositions;
 
-    bool updated = false, started = false;
+    bool updated = false, started = false, startedSemaforo = false, updatedSemaforo = false;
 
-    public GameObject carroPrefab, semaforo1Prefab, semaforo2Prefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, crucePeatonalPrefab, piso;
-    public int numeroCarros, ancho, alto;
+    public GameObject carroPrefab, luzSemaforoPrefab, semaforo1Prefab, parkingPrefab, roadPrefab, edificioPrefab, pastoPrefab, arbolPrefab, pavimentoPrefab, esquinaPrefab, lamparaPrefab, crucePeatonalPrefab, piso;
+    public int numeroCarros = 100;
+    public int ancho, alto;
     public float timeToUpdate = 5.0f;
     private float timer, dt;
 
     void Start()
     {
-        MakeTiles(layout.text);
+        if (crearCiudad)
+            MakeTiles(layout.text);
 
         carrosData = new CarroData();
         semaforosData = new SemaforoData();
-        parkingsData = new ParkingData();
 
         prevPositions = new Dictionary<string, Vector3>();
         currPositions = new Dictionary<string, Vector3>();
 
         carros = new Dictionary<string, GameObject>();
         semaforos = new Dictionary<string, GameObject>();
-        parkings = new Dictionary<string, GameObject>();
 
         piso.transform.localScale = new Vector3((float)(ancho + 1) / 10, 1, (float)(alto + 1) / 10);
         piso.transform.localPosition = new Vector3((float)ancho/2-0.5f, 0, (float)alto/2-0.5f);
@@ -303,6 +279,7 @@ public class trafficModelControler : MonoBehaviour
         else
         {
             StartCoroutine(GetCarrosData());
+            StartCoroutine(GetSemaforosData());
         }
     }
 
@@ -328,6 +305,7 @@ public class trafficModelControler : MonoBehaviour
             Debug.Log("Configuration upload complete!");
             Debug.Log("Getting Agents positions");
             StartCoroutine(GetCarrosData());
+            StartCoroutine(GetSemaforosData());
         }
     }
 
@@ -362,6 +340,38 @@ public class trafficModelControler : MonoBehaviour
 
             updated = true;
             if(!started) started = true;
+        }
+    }
+
+    IEnumerator GetSemaforosData()
+    {
+        UnityWebRequest www = UnityWebRequest.Get(serverUrl + getSemaforoEndpoint);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+            Debug.Log(www.error);
+        else
+        {
+            semaforosData = JsonUtility.FromJson<SemaforoData>(www.downloadHandler.text);
+
+            foreach(DatosSemaforos luzSemaforo in semaforosData.positions)
+            {
+                if (!startedSemaforo)
+                {
+                    Vector3 semaforoPos = new Vector3(luzSemaforo.x, luzSemaforo.y, luzSemaforo.z);
+                    semaforos[luzSemaforo.id] = Instantiate(luzSemaforoPrefab, new Vector3(luzSemaforo.x, luzSemaforo.y, luzSemaforo.z), Quaternion.identity);
+                }
+                else
+                {
+                    if (luzSemaforo.semaforoActive){
+                        semaforos[luzSemaforo.id].GetComponent<getChildSemaforo>().SetSemaforoRojo();
+                    } else {
+                        semaforos[luzSemaforo.id].GetComponent<getChildSemaforo>().SetSemaforoVerde();
+                    }
+                }
+            }
+
+            if (!startedSemaforo) startedSemaforo = true;
         }
     }
 }

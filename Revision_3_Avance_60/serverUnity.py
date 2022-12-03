@@ -7,8 +7,8 @@ from model import *
 from agent import *
 
 # Tamaño del tablero:
-nAgents = 0
-numeroCarros = 1
+nAgents = 100
+numeroCarros = 100
 numeroSemaforos = 12
 tiempo = 0
 ancho = 24
@@ -55,8 +55,9 @@ def getSemaforo():
     global trafficModel
 
     if request.method == 'GET':
-        posicionesSemaforo = [{"id": str(s.unique_id),
-                              "x": x, "y": 0, "z": z}
+        posicionesSemaforo = [{"id": str(a.unique_id),
+                              "x": x, "y": 0, "z": z,
+                               "semaforoActive": a.state}
                               for (s, x, z) in trafficModel.grid.coord_iter()
                               for a in s if isinstance(a, Traffic_Light)]
 
