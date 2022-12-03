@@ -5,7 +5,8 @@ from mesa.visualization.ModularVisualization import ModularServer
 
 
 def agent_portrayal(agent):
-    if agent is None: return
+    if agent is None:
+        return
 
     portrayal = {"Shape": "rect",
                  "Filled": "true",
@@ -46,16 +47,16 @@ def agent_portrayal(agent):
 width = 0
 height = 0
 
-with open('D:\QuintoSemestre\MultiAgentes\Revision_3_Avance_60\Base.txt') as baseFile:
+with open('Base.txt') as baseFile:
     lines = baseFile.readlines()
     width = len(lines[0])-1
     height = len(lines)
 
-model_params = {"N": 5}
+model_params = {"N": 100}
 
 grid = CanvasGrid(agent_portrayal, width, height, 500, 500)
 
 server = ModularServer(RandomModel, [grid], "Traffic Base", model_params)
 
-server.port = 8521  # The default
+server.port = 8522  # The default
 server.launch()
